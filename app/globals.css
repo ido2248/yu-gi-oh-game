@@ -1,26 +1,101 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-heebo: var(--font-heebo);
+  --font-family-heebo: var(--font-heebo), "Arial Hebrew", Arial, sans-serif;
+
+  /* Dark cinematic palette */
+  --color-board-bg: #050a14;
+  --color-zone-border: #1e3a5f;
+  --color-zone-bg: #0a1628;
+  --color-zone-hover: #0f2040;
+  --color-zone-highlight: #2563eb;
+
+  /* Card type colors */
+  --color-card-monster: #c47c1e;
+  --color-card-spell: #1a6b4a;
+  --color-card-trap: #7c1a4a;
+  --color-card-normal: #8b7340;
+
+  /* Tutorial dialog */
+  --color-dialog-bg: #0d1b2e;
+  --color-dialog-border: #1e4080;
+
+  /* LP bars */
+  --color-lp-player: #2563eb;
+  --color-lp-bot: #dc2626;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  direction: rtl;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #050a14;
+  color: #f1f5f9;
+  font-family: var(--font-heebo), "Arial Hebrew", Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0a1628;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e3a5f;
+  border-radius: 3px;
+}
+
+/* Zone glow animation */
+@keyframes zoneGlow {
+  0%, 100% { box-shadow: 0 0 8px 2px rgba(37, 99, 235, 0.4); }
+  50% { box-shadow: 0 0 20px 6px rgba(37, 99, 235, 0.8); }
+}
+
+.zone-glow {
+  animation: zoneGlow 1.5s ease-in-out infinite;
+}
+
+/* Card flip */
+.card-container {
+  perspective: 600px;
+}
+
+.card-flip-inner {
+  transition: transform 0.5s;
+  transform-style: preserve-3d;
+  position: relative;
+}
+
+.card-flip-inner.face-down {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  backface-visibility: hidden;
+  position: absolute;
+  inset: 0;
+}
+
+.card-back-face {
+  transform: rotateY(180deg);
+}
+
+/* LP counter animation */
+@keyframes lpDamage {
+  0% { color: #f1f5f9; }
+  30% { color: #ef4444; transform: scale(1.15); }
+  100% { color: #f1f5f9; transform: scale(1); }
+}
+
+.lp-damage {
+  animation: lpDamage 0.6s ease-out forwards;
 }
