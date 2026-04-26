@@ -33,7 +33,7 @@ export default function DeckZone({ count, owner, highlighted = false, onClick }:
         </>
       ) : (
         <div className="flex-1 flex items-center justify-center">
-          <span className="text-[9px] text-blue-900/50 text-center">{he.deckZone}</span>
+          <span className="text-[9px] text-blue-300/80 text-center">{he.deckZone}</span>
         </div>
       )}
     </motion.div>

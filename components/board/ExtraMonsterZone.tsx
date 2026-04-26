@@ -25,7 +25,7 @@ export default function ExtraMonsterZone({ slot, slotIndex, highlighted = false,
       onClick={onClick}
     >
       {!slot && (
-        <span className="text-[8px] text-cyan-900/50 text-center leading-tight">{he.extraMonsterZone}</span>
+        <span className="text-[8px] text-cyan-300/80 text-center leading-tight">{he.extraMonsterZone}</span>
       )}
       <AnimatePresence mode="popLayout">
         {slot && (

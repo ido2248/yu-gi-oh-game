@@ -34,7 +34,7 @@ export default function SpellTrapZone({ slot, zoneIndex, owner, highlighted = fa
       whileHover={{ scale: 1.02 }}
     >
       {isEmpty && (
-        <span className="text-[8px] text-emerald-900/50 text-center px-1 leading-tight select-none">
+        <span className="text-[8px] text-emerald-300/80 text-center px-1 leading-tight select-none">
           {he.spellTrapZone.split('/')[0]}
         </span>
       )}

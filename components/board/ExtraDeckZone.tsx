@@ -20,7 +20,7 @@ export default function ExtraDeckZone({ count, owner, highlighted = false }: Pro
         ${highlighted ? 'zone-glow border-purple-400' : ''}
       `}
     >
-      <span className="text-[8px] text-purple-800/50 text-center leading-tight">{he.extraDeckZone.split(' ').slice(-1)}</span>
+      <span className="text-[8px] text-purple-300/80 text-center leading-tight">{he.extraDeckZone.split(' ').slice(-1)}</span>
       {count > 0 && (
         <span className="text-xs font-bold text-purple-300">{count}</span>
       )}

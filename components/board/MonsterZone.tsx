@@ -51,7 +51,7 @@ export default function MonsterZone({
     >
       {/* Zone label when empty */}
       {isEmpty && (
-        <span className="text-[9px] text-blue-800/60 text-center px-1 leading-tight select-none">
+        <span className="text-[9px] text-blue-300/80 text-center px-1 leading-tight select-none">
           {he.monsterZone}
         </span>
       )}

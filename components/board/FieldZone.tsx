@@ -19,7 +19,7 @@ export default function FieldZone({ owner, highlighted = false }: Props) {
         ${highlighted ? 'zone-glow border-green-400' : ''}
       `}
     >
-      <span className="text-[8px] text-green-900/50 text-center leading-tight">{he.fieldZone}</span>
+      <span className="text-[8px] text-green-300/80 text-center leading-tight">{he.fieldZone}</span>
     </motion.div>
   );
 }

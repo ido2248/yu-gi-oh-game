@@ -38,7 +38,7 @@ export default function GraveyardZone({ cards, owner, highlighted = false, onCli
         </>
       ) : (
         <div className="flex-1 flex items-center justify-center">
-          <span className="text-[8px] text-gray-700/60 text-center leading-tight">{he.graveyardZone}</span>
+          <span className="text-[8px] text-gray-300/80 text-center leading-tight">{he.graveyardZone}</span>
         </div>
       )}
     </motion.div>

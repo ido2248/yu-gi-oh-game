@@ -11,7 +11,6 @@ import ExtraDeckZone from './ExtraDeckZone';
 import ExtraMonsterZone from './ExtraMonsterZone';
 import CardBack from '@/components/card/CardBack';
 import LifePointsDisplay from '@/components/ui/LifePointsDisplay';
-import PhaseIndicator from '@/components/ui/PhaseIndicator';
 import PhaseSelector from '@/components/ui/PhaseSelector';
 import HandZone from '@/components/ui/HandZone';
 import ActionButton from '@/components/ui/ActionButton';
@@ -47,9 +46,6 @@ export default function GameBoard() {
     handleMonsterZoneClick,
     handleSpellTrapZoneClick,
     handleHandCardClick,
-    handleEndTurn,
-    handleEnterBattlePhase,
-    handleMainPhase2,
     handleDirectAttack,
     handleDeckClick,
     handlePhaseSelect,
@@ -82,14 +78,7 @@ export default function GameBoard() {
       )}
 
       {/* ── Opponent Hand Bar (top) ───────────────────────────────────── */}
-      <div className="flex-none flex items-center justify-between gap-4 border-b border-blue-900/30 bg-blue-950/10 px-4 py-2">
-        <div className="flex items-center gap-2 text-xs text-gray-500 shrink-0">
-          <span>{he.turn} {currentTurn}</span>
-          {activePlayer === 'bot' && (
-            <span className="text-red-400 font-semibold animate-pulse">{he.botTurn}</span>
-          )}
-        </div>
-
+      <div className="flex-none flex items-center justify-center gap-4 border-b border-blue-900/30 bg-blue-950/10 px-4 py-2">
         <div className="flex gap-1 justify-center flex-1">
           {botHand.map((_, i) => (
             <div key={i} className="w-10 h-14 rounded overflow-hidden border border-blue-900/40 shrink-0">
@@ -187,7 +176,7 @@ export default function GameBoard() {
             className={`absolute inset-1 flex flex-col items-center justify-center gap-1 transition-all ${canChangePhase ? 'cursor-pointer hover:brightness-110' : 'cursor-default'}`}
             style={{
               clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
-              background: canChangePhase
+              background: activePlayer === 'player'
                 ? 'linear-gradient(180deg, #7f1d1d 0%, #450a0a 100%)'
                 : 'linear-gradient(180deg, #1e3a5f 0%, #0a1628 100%)',
             }}
@@ -268,61 +257,25 @@ export default function GameBoard() {
         </div>
       </div>
 
-      {/* ── Phase bar & action buttons ────────────────────────────────── */}
-      <div className="flex-none bg-gray-950/80 border-t border-blue-900/20 px-4 py-2 flex items-center justify-between gap-2">
-        <PhaseIndicator phase={currentPhase} />
-
-        <div className="flex gap-2 flex-wrap justify-end">
-          {pendingAction === 'TRIBUTE_SELECT' && tributeSelection.length > 0 && (
-            <ActionButton
-              label={`הקרב ${tributeSelection.length} ← אשר`}
-              onClick={() => {
-                const sel = selection;
-                if (sel && sel.source === 'hand' && sel.handIndex !== undefined) {
-                  const emptyZone = playerMonsterZones.findIndex((z) => !z);
-                  if (emptyZone !== -1) {
-                    useGameStore.getState().tributeSummon(sel.handIndex, tributeSelection, emptyZone);
-                    if (tutorialStore.isActive && tutorialStore.awaitingPlayerAction === 'TRIBUTE_SUMMON') tutorialStore.advance();
-                  }
+      {/* ── Tribute confirm overlay ───────────────────────────────────── */}
+      {pendingAction === 'TRIBUTE_SELECT' && tributeSelection.length > 0 && (
+        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20">
+          <ActionButton
+            label={`הקרב ${tributeSelection.length} ← אשר`}
+            onClick={() => {
+              const sel = selection;
+              if (sel && sel.source === 'hand' && sel.handIndex !== undefined) {
+                const emptyZone = playerMonsterZones.findIndex((z) => !z);
+                if (emptyZone !== -1) {
+                  useGameStore.getState().tributeSummon(sel.handIndex, tributeSelection, emptyZone);
+                  if (tutorialStore.isActive && tutorialStore.awaitingPlayerAction === 'TRIBUTE_SUMMON') tutorialStore.advance();
                 }
-              }}
-              variant="success"
-            />
-          )}
-
-          {activePlayer === 'player' && (
-            <>
-              {currentPhase === 'MAIN1' && (
-                <ActionButton
-                  id="btn-battle-phase"
-                  label={he.enterBattlePhase}
-                  onClick={handleEnterBattlePhase}
-                  variant="primary"
-                  highlighted={isHighlighted('btn-battle-phase')}
-                />
-              )}
-              {currentPhase === 'BATTLE' && (
-                <ActionButton
-                  id="btn-main2"
-                  label={he.toMainPhase2}
-                  onClick={handleMainPhase2}
-                  variant="secondary"
-                  highlighted={isHighlighted('btn-main2')}
-                />
-              )}
-              {(currentPhase === 'MAIN1' || currentPhase === 'MAIN2') && (
-                <ActionButton
-                  id="btn-end-turn"
-                  label={he.endTurn}
-                  onClick={handleEndTurn}
-                  variant="danger"
-                  highlighted={isHighlighted('btn-end-turn')}
-                />
-              )}
-            </>
-          )}
+              }
+            }}
+            variant="success"
+          />
         </div>
-      </div>
+      )}
     </div>
   );
 }
