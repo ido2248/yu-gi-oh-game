@@ -19,7 +19,7 @@ export const tutorialSteps: TutorialStep[] = [
   {
     id: 'zone-spelltrap',
     dialog: 'אזור קסמים ומלכודות',
-    subDialog: 'כאן תניח קלפי לחש ומלכודת. קלפי לחש נכנסים לפעולה מיד, ומלכודות מופעלות כשהיריב מנסה לתקוף.',
+    subDialog: 'כאן תניח קלפי כישוף ומלכודת. קלפי כישוף אפשר להפעיל כמה שאתה רוצה בתור אבל אתה לא יכול להפעיל אותם בתור של היריב בשביל זה יש קלפי מלכודת,  המופעלים בתור של היריב. כמו קלפי קישוף אפשר להשתמש בכמה מלכודות שאתה רוצה וניתן להניח עד ל5 כלפי כישוף / מלכודות בזירה.',
     highlightZones: ['player-st-0', 'player-st-1', 'player-st-2', 'player-st-3', 'player-st-4'],
     autoAdvance: true,
   },
@@ -99,7 +99,7 @@ export const tutorialSteps: TutorialStep[] = [
     subDialog:
       'גרור את Giant Soldier of Stone מהיד שלך לאחד מאזורי המפלצות. ' +
       'בכל תור ניתן לבצע הזמנה רגילה אחת בלבד!',
-    highlightZones: ['player-hand', 'player-monster-0', 'player-monster-1', 'player-monster-2'],
+    highlightZones: ['player-hand', 'player-monster-0', 'player-monster-1', 'player-monster-2', 'player-monster-3', 'player-monster-4'],
     expectedAction: 'NORMAL_SUMMON',
   },
   {
@@ -255,9 +255,9 @@ export const tutorialSteps: TutorialStep[] = [
   },
   {
     id: 't5-reborn',
-    dialog: 'קלף לחש — Monster Reborn',
+    dialog: 'קלף כישוף — Monster Reborn',
     subDialog:
-      'Monster Reborn ביד שלך! קלפי לחש נכנסים לפעולה מיד. ' +
+      'Monster Reborn ביד שלך! קלפי כישוף נכנסים לפעולה מיד. ' +
       'הפעל את Monster Reborn כדי להחזיר את Giant Soldier of Stone מבית הקברות!',
     highlightZones: ['player-hand', 'player-graveyard'],
     expectedAction: 'ACTIVATE_SPELL',
@@ -266,7 +266,7 @@ export const tutorialSteps: TutorialStep[] = [
     id: 't5-reborn-result',
     dialog: 'Monster Reborn!',
     subDialog:
-      'Giant Soldier of Stone חזר! Monster Reborn הוא אחד מקלפי הלחש האגדיים ביותר ביוגי-או.',
+      'Giant Soldier of Stone חזר! Monster Reborn הוא אחד מקלפי הכישוף האגדיים ביותר ביוגי-או.',
     highlightZones: ['player-monster-0'],
     autoAdvance: true,
   },
@@ -377,7 +377,7 @@ export const tutorialSteps: TutorialStep[] = [
     id: 't7-draw',
     dialog: '✨ לב הקלפים עבד! ✨',
     subDialog:
-      'שלפת Harpie\'s Feather Duster! קלף לחש זה מ השמיד את כל קלפי הלחש והמלכודת של היריב! הפעל אותו!',
+      'שלפת Harpie\'s Feather Duster! קלף כישוף זה מ השמיד את כל קלפי הכישוף והמלכודת של היריב! הפעל אותו!',
     highlightZones: ['player-hand'],
     expectedAction: 'ACTIVATE_SPELL',
   },

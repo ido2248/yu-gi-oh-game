@@ -4,7 +4,7 @@ import type { Card } from '@/types/game';
 const frameColors: Record<string, { bg: string; border: string; badge: string; label: string }> = {
   normal:  { bg: 'bg-amber-950',   border: 'border-amber-600',   badge: 'bg-amber-700',   label: 'מפלצת רגילה' },
   effect:  { bg: 'bg-orange-950',  border: 'border-orange-500',  badge: 'bg-orange-700',  label: 'מפלצת אפקט' },
-  spell:   { bg: 'bg-emerald-950', border: 'border-emerald-500', badge: 'bg-emerald-700', label: 'לחש' },
+  spell:   { bg: 'bg-emerald-950', border: 'border-emerald-500', badge: 'bg-emerald-700', label: 'כישוף' },
   trap:    { bg: 'bg-rose-950',    border: 'border-rose-500',    badge: 'bg-rose-700',    label: 'מלכודת' },
   ritual:  { bg: 'bg-blue-950',    border: 'border-blue-500',    badge: 'bg-blue-700',    label: 'מפלצת טקסית' },
   fusion:  { bg: 'bg-purple-950',  border: 'border-purple-500',  badge: 'bg-purple-700',  label: 'מפלצת Fusion' },

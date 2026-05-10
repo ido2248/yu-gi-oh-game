@@ -21,6 +21,8 @@ function makeInitialState(): GameState {
     activePlayer: 'player',
     normalSummonUsed: false,
     hasAttackedThisTurn: false,
+    playerSummonedThisTurn: [],
+    playerChangedPositionThisTurn: [],
     playerHand: [],
     botHand: [],
     playerDeck: [],
@@ -151,9 +153,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (!card) return;
     const zones = [...state.playerMonsterZones];
     if (zones[zoneIndex] !== null) return;
-    zones[zoneIndex] = { card, position: 'ATK', instanceId: nanoid() };
+    const id = nanoid();
+    zones[zoneIndex] = { card, position: 'ATK', instanceId: id };
     const newHand = state.playerHand.filter((_, i) => i !== handIndex);
-    set({ playerMonsterZones: zones, playerHand: newHand, normalSummonUsed: true, selection: null });
+    set({ playerMonsterZones: zones, playerHand: newHand, normalSummonUsed: true, selection: null, playerSummonedThisTurn: [...state.playerSummonedThisTurn, id] });
   },
 
   setMonster: (handIndex, zoneIndex) => {
@@ -163,9 +166,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (!card) return;
     const zones = [...state.playerMonsterZones];
     if (zones[zoneIndex] !== null) return;
-    zones[zoneIndex] = { card, position: 'FACEDOWN', instanceId: nanoid() };
+    const id = nanoid();
+    zones[zoneIndex] = { card, position: 'FACEDOWN', instanceId: id };
     const newHand = state.playerHand.filter((_, i) => i !== handIndex);
-    set({ playerMonsterZones: zones, playerHand: newHand, normalSummonUsed: true, selection: null });
+    set({ playerMonsterZones: zones, playerHand: newHand, normalSummonUsed: true, selection: null, playerSummonedThisTurn: [...state.playerSummonedThisTurn, id] });
   },
 
   tributeSummon: (handIndex, tributeZoneIndices, targetZoneIndex) => {
@@ -183,7 +187,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
       }
     });
 
-    zones[targetZoneIndex] = { card, position: 'ATK', instanceId: nanoid() };
+    const id = nanoid();
+    zones[targetZoneIndex] = { card, position: 'ATK', instanceId: id };
     const newHand = state.playerHand.filter((_, i) => i !== handIndex);
     set({
       playerMonsterZones: zones,
@@ -192,6 +197,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       normalSummonUsed: true,
       tributeSelection: [],
       selection: null,
+      playerSummonedThisTurn: [...state.playerSummonedThisTurn, id],
     });
   },
 
@@ -199,8 +205,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const state = get();
     if (owner === 'player') {
       const zones = [...state.playerMonsterZones];
-      zones[zoneIndex] = { card, position, instanceId: nanoid() };
-      set({ playerMonsterZones: zones });
+      const id = nanoid();
+      zones[zoneIndex] = { card, position, instanceId: id };
+      set({ playerMonsterZones: zones, playerSummonedThisTurn: [...state.playerSummonedThisTurn, id] });
     } else {
       const zones = [...state.botMonsterZones];
       zones[zoneIndex] = { card, position, instanceId: nanoid() };
@@ -245,7 +252,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const slot = zones[zoneIndex];
     if (!slot) return;
     zones[zoneIndex] = { ...slot, position: newPosition };
-    set({ playerMonsterZones: zones });
+    set({ playerMonsterZones: zones, playerChangedPositionThisTurn: [...state.playerChangedPositionThisTurn, slot.instanceId] });
   },
 
   selectAttacker: (zoneIndex) => {
@@ -323,6 +330,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
       currentPhase: 'DRAW',
       normalSummonUsed: false,
       hasAttackedThisTurn: false,
+      playerSummonedThisTurn: [],
+      playerChangedPositionThisTurn: [],
       selection: null,
       attackingZoneIndex: null,
       tributeSelection: [],
@@ -358,8 +367,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     if (owner === 'player') {
       const zones = [...state.playerMonsterZones];
-      zones[targetZone] = { card, position, instanceId: nanoid() };
-      set({ playerGraveyard: newGY, playerMonsterZones: zones });
+      const id = nanoid();
+      zones[targetZone] = { card, position, instanceId: id };
+      set({ playerGraveyard: newGY, playerMonsterZones: zones, playerSummonedThisTurn: [...state.playerSummonedThisTurn, id] });
     } else {
       const zones = [...state.botMonsterZones];
       zones[targetZone] = { card, position, instanceId: nanoid() };

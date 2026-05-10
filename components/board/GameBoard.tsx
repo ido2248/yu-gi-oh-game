@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import { useGameStore } from '@/store/gameStore';
 import { useTutorialStore } from '@/store/tutorialStore';
 import MonsterZone from './MonsterZone';
@@ -16,11 +17,13 @@ import HandZone from '@/components/ui/HandZone';
 import ActionButton from '@/components/ui/ActionButton';
 import TutorialDialog from '@/components/ui/TutorialDialog';
 import GraveyardModal from '@/components/ui/GraveyardModal';
+import ZoneActionMenu, { type ActionMenuState } from '@/components/ui/ZoneActionMenu';
 import { useGameActions } from '@/hooks/useGameActions';
 import { he } from '@/i18n/he';
 
 export default function GameBoard() {
   const [showPhaseSelector, setShowPhaseSelector] = useState(false);
+  const [activeMenu, setActiveMenu] = useState<ActionMenuState | null>(null);
 
   const {
     playerLP, botLP,
@@ -40,6 +43,7 @@ export default function GameBoard() {
   const tutorialStore = useTutorialStore();
   const currentStep = tutorialStore.getCurrentStep();
   const highlightZones = currentStep?.highlightZones ?? [];
+  const tutorialActive = tutorialStore.isActive;
   const { pendingAction } = useGameStore();
 
   const {
@@ -49,7 +53,55 @@ export default function GameBoard() {
     handleDirectAttack,
     handleDeckClick,
     handlePhaseSelect,
+    shouldShowSummonMenu,
+    shouldShowPositionMenu,
   } = useGameActions();
+
+  function onHandCardClick(index: number) {
+    if (shouldShowSummonMenu(index)) {
+      const card = playerHand[index];
+      useGameStore.getState().setSelection({ card, source: 'hand', handIndex: index });
+      setActiveMenu({ type: 'summon', handIndex: index });
+    } else {
+      if (activeMenu?.type === 'summon') setActiveMenu(null);
+      handleHandCardClick(index);
+    }
+  }
+
+  function onPlayerMonsterZoneClick(zoneIndex: number) {
+    if (shouldShowPositionMenu(zoneIndex)) {
+      const slot = playerMonsterZones[zoneIndex]!;
+      setActiveMenu({ type: 'position', zoneIndex, currentPosition: slot.position });
+    } else {
+      handleMonsterZoneClick('player', zoneIndex);
+    }
+  }
+
+  function onMenuClose() {
+    setActiveMenu(null);
+    if (activeMenu?.type === 'summon') {
+      useGameStore.getState().setSelection(null);
+      useGameStore.getState().setPendingAction(null);
+    }
+  }
+
+  function onMenuSummon() {
+    useGameStore.getState().setPendingAction('SUMMON_CHOOSE');
+    setActiveMenu(null);
+  }
+
+  function onMenuSet() {
+    useGameStore.getState().setPendingAction('SET_MONSTER_CHOOSE');
+    setActiveMenu(null);
+  }
+
+  function onMenuChangePosition() {
+    if (activeMenu?.type === 'position') {
+      const idx = activeMenu.zoneIndex;
+      setActiveMenu(null);
+      handleMonsterZoneClick('player', idx);
+    }
+  }
 
   const isHighlighted = (zoneId: string) => highlightZones.includes(zoneId);
   const isAttackMode = attackingZoneIndex !== null;
@@ -61,6 +113,17 @@ export default function GameBoard() {
     <div className="relative flex flex-col h-screen w-full bg-board-bg overflow-hidden select-none">
       {/* Overlays */}
       <TutorialDialog />
+      <AnimatePresence>
+        {activeMenu && (
+          <ZoneActionMenu
+            menu={activeMenu}
+            onSummon={onMenuSummon}
+            onSet={onMenuSet}
+            onChangePosition={onMenuChangePosition}
+            onClose={onMenuClose}
+          />
+        )}
+      </AnimatePresence>
       {showGraveyardModal && (
         <GraveyardModal
           cards={showGraveyardModal === 'player' ? playerGraveyard : botGraveyard}
@@ -130,7 +193,7 @@ export default function GameBoard() {
             cards={botGraveyard}
             owner="bot"
             highlighted={isHighlighted('bot-graveyard')}
-            onClick={() => setShowGraveyard('bot')}
+            onClick={tutorialActive ? undefined : () => setShowGraveyard('bot')}
           />
         </div>
       </div>
@@ -199,7 +262,7 @@ export default function GameBoard() {
             cards={playerGraveyard}
             owner="player"
             highlighted={isHighlighted('player-graveyard')}
-            onClick={() => setShowGraveyard('player')}
+            onClick={tutorialActive ? undefined : () => setShowGraveyard('player')}
           />
           {playerMonsterZones.map((slot, i) => (
             <MonsterZone
@@ -210,7 +273,7 @@ export default function GameBoard() {
               highlighted={isHighlighted(`player-monster-${i}`)}
               selected={selection?.source === 'zone' && selection.zoneId?.index === i}
               isAttacker={attackingZoneIndex === i}
-              onClick={() => handleMonsterZoneClick('player', i)}
+              onClick={() => onPlayerMonsterZoneClick(i)}
             />
           ))}
           <FieldZone owner="player" highlighted={isHighlighted('player-field')} />
@@ -250,7 +313,7 @@ export default function GameBoard() {
         <div className="flex-1">
           <HandZone
             cards={playerHand}
-            onCardClick={handleHandCardClick}
+            onCardClick={onHandCardClick}
             selectedIndex={selection?.source === 'hand' ? selection.handIndex ?? null : null}
             tributeIndices={tributeSelection}
           />

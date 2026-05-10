@@ -61,6 +61,8 @@ export interface GameState {
   activePlayer: ActivePlayer;
   normalSummonUsed: boolean;
   hasAttackedThisTurn: boolean;
+  playerSummonedThisTurn: string[];
+  playerChangedPositionThisTurn: string[];
 
   // Decks & hands
   playerHand: Card[];

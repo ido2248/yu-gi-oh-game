@@ -13,18 +13,18 @@ export default function TutorialDialog() {
     <AnimatePresence>
       {show && (
         <motion.div
-          className="fixed bottom-0 right-0 left-0 z-40 flex justify-center pb-4 px-4 pointer-events-none"
-          initial={{ y: 80, opacity: 0 }}
+          className="fixed top-0 right-0 left-0 z-40 flex justify-center pt-2 px-4 pointer-events-none"
+          initial={{ y: -80, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 80, opacity: 0 }}
+          exit={{ y: -80, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
         >
           <motion.div
             className="
               pointer-events-auto
               max-w-2xl w-full
-              bg-gradient-to-b from-gray-900 to-gray-950
-              border border-blue-800/60
+              bg-black/40 backdrop-blur-md
+              border border-blue-800/30
               rounded-xl shadow-2xl
               overflow-hidden
             "
